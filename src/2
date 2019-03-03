@@ -1,0 +1,45 @@
+{-# LANGUAGE OverloadedStrings #-}
+
+module Main where
+
+import Hakyll
+import Data.Maybe
+
+main :: IO ()
+main = putStrLn "Hello, Haskell!"
+
+compileCss :: Rules ()
+compileCss = do 
+  match "style.css" $ do
+    route   idRoute
+    compile copyFileCompiler
+  match "chota.css" $ do
+    route   idRoute
+    compile copyFileCompiler
+
+content :: Pattern
+content = "**.md"
+
+compileMenu :: Rules ()
+compileMenu = match content $ version "menu" $ compile destination
+
+destination :: Compiler (Item String)
+destination = setVersion Nothing <$> getUnderlying
+              >>= getRoute
+              >>= makeItem . fromMaybe ""
+
+compileContent :: Rules ()
+compileContent = match content $ do
+  route $ setExtension "html"
+  compile $ do
+    menu <- contentContext
+    pandocCompiler
+      >>= loadAndApplyTemplate "template.html" menu
+      >>= relativizeUrls
+
+contentContext :: Compiler (Context String)
+contentContext = do
+  menu <- getMenu
+  return $
+    defaultContext `mappend`
+    constField "menu" menu
