@@ -1,66 +1,90 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# OPTIONS_GHC -Wall -Werror #-}
+{-# OPTIONS_GHC -fno-warn-unused-imports #-}
+{-# OPTIONS_GHC -fno-warn-type-defaults #-}
 
 module Main where
 
 import Hakyll
 import Data.Maybe
+import Data.String (fromString)
+import qualified Data.Text as T
 
 main :: IO ()
 main = hakyll $ do
-         compileCss
-         compileMenu
-         compileContent
-         compileTemplates
 
-compileCss :: Rules ()
-compileCss = do 
-  match "style.css" $ do
+  -- Static files
+  match ("images/**.jpg" 
+    .||. "images/**.png" 
+    .||. "images/**.gif" 
+    .||. "favicon.ico" 
+    .||. "files/**"
+    .||. "js/*"
+        ) $ do
     route   idRoute
     compile copyFileCompiler
-  match "chota.css" $ do
-    route   idRoute
-    compile copyFileCompiler
 
-content :: Pattern
-content = "**.md"
+  -- Compress CSS into one file.
+  match "css/*" $ compile compressCssCompiler
+  create ["style.css"] $ do
+    route idRoute
+    compile $ do
+      csses <- loadAll "css/*.css"
+      makeItem $ unlines $ map itemBody csses
 
-compileMenu :: Rules ()
-compileMenu = match content $ version "menu" $ compile destination
+  -- Read templates
+  match "templates/*" $ compile $ templateCompiler
 
-destination :: Compiler (Item String)
-destination = setVersion Nothing <$> getUnderlying
-              >>= getRoute
-              >>= makeItem . fromMaybe ""
+  -- Index
+  create ["index.html"] $ do
+    route idRoute
+    compile $ do
+      -- Art
+      art <- loadAll "images/art/*"
+      artTpl <- loadBody "templates/art.html" 
+      let imageCtx :: Context CopyFile
+          imageCtx = urlField "url" <> missingField  
+      arts <- applyTemplateList artTpl imageCtx art 
+      -- Page
+      let indexContext = 
+               constField "title" "home"
+            <> constField "art" arts
+            <> defCtx
+      makeItem ""
+        >>= loadAndApplyTemplate "templates/default.html" indexContext
+        >>= loadAndApplyTemplate "templates/index.html" indexContext
+        >>= relativizeUrls
 
-compileContent :: Rules ()
-compileContent = match content $ do
-  route $ setExtension "html"
-  compile $ do
-    menu <- contentContext
-    pandocCompiler
-      >>= loadAndApplyTemplate "template.html" menu
+  create ["gallery.html"] $ do
+    route idRoute
+    compile $ do
+      -- Art
+      art <- loadAll "images/art/*"
+      artTpl <- loadBody "templates/art-gallery.html" 
+      let imageCtx :: Context CopyFile
+          imageCtx = urlField "url" <> missingField
+      arts <- applyTemplateList artTpl imageCtx art 
+      -- Page
+      let galleryContext = 
+               constField "title" "gallery"
+            <> constField "art" arts
+            <> defCtx
+      makeItem ""
+        >>= loadAndApplyTemplate "templates/default.html" galleryContext
+        >>= loadAndApplyTemplate "templates/gallery.html" galleryContext
+        >>= relativizeUrls
+
+  match "pages/*.md" $ do
+    route $ setExtension "html"
+    compile $ pandocCompiler
+      >>= loadAndApplyTemplate "templates/default.html" defCtx
       >>= relativizeUrls
 
-contentContext :: Compiler (Context String)
-contentContext = do
-  menu <- getMenu
-  pure $
-    defaultContext <>
-    constField "menu" menu
+defCtx :: Context String
+defCtx = activeClassField <> defaultContext
 
-getMenu :: Compiler String
-getMenu = do
-  menu <- map itemBody <$> loadAll (fromVersion $ Just "menu")
-  myRoute <- getRoute =<< getUnderlying
-  pure $ case myRoute of
-             Nothing -> showMenu "" menu
-             Just me -> showMenu me menu
-
-showMenu :: FilePath -> [FilePath] -> String
-showMenu this items = "<ul>"++concatMap li items++"</ul>"
-  where li item = "<li><a href=\"/"++item++"\">"++name item++"</a></li>"
-        name item | item == this = "<strong>"++item++"</strong>"
-                  | otherwise    = item
-
-compileTemplates :: Rules ()
-compileTemplates = match "template.html" $ compile templateCompiler
+activeClassField :: Context a
+activeClassField = functionField "activeClass" $ \[p] _ -> do
+    path <- toFilePath <$> getUnderlying
+    return $ if path == p then "active" else "inactive" 
