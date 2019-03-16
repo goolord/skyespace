@@ -1,0 +1,59 @@
+ @import url('https://fonts.googleapis.com/css?family=Poppins');
+
+:root {
+  --color-primary: #5a61dd;
+  --color-darkGrey: #d2d6dd;
+  --color-grey: #7e818b;
+  --color-lightGrey: #3f4144;
+  --color-error: #d43939;
+  --color-success: #28bd14;
+  --grid-maxWidth: 90%;
+  --grid-gutter: 2rem;
+  --font-size: 1.6rem;
+  --font-family: "Poppins", sans-serif;
+  --font-color: #ffffff;
+}
+
+html {
+  color: var(--font-color);
+}
+
+.stars, .twinkling {
+  position: fixed;
+  display: block;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.stars {
+  z-index: -99;
+  background: #000 url("https://image.ibb.co/mjnygo/stars.png") repeat top center;
+}
+
+.twinkling {
+  z-index: -98;
+  background: transparent url("https://image.ibb.co/ir1DE8/twinkling.png") repeat top center;
+  animation: move-twink-back 400s linear infinite;
+}
+
+@keyframes move-twink-back {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -10000px 5000px;
+  }
+}
+
+nav {
+  padding-bottom: 4em;
+  padding-top: 1em;
+}
+
+.brand { white-space:nowrap; }
+

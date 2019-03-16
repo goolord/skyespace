@@ -1,2 +1,4 @@
 dist*/
 .ghc*
+_site/
+_cache/
