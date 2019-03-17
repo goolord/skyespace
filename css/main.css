@@ -1,4 +1,5 @@
  @import url('https://fonts.googleapis.com/css?family=Poppins');
+@import url('https://fonts.googleapis.com/css?family=Lilita+One');
 
 :root {
   --color-primary: #5a61dd;
@@ -56,7 +57,10 @@ nav {
   padding-top: 1em;
 }
 
-.brand { white-space:nowrap; }
+.brand { 
+  white-space:nowrap; 
+  font-family: 'Lilita One';
+}
 
 .contact {
   display: grid;
