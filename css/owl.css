@@ -162,6 +162,7 @@
   background: rgba(255, 255, 255, 0.2);
   opacity: 1;
   transition: background .4s ease;
+  transform: none !important;
 }
 
 .owl-prev:hover,
@@ -170,12 +171,13 @@
   background: rgba(255, 255, 255, 0.3); 
 }
 
-.owl-prev { left: -50px; }
+.owl-prev { left: -55px; }
 
-.owl-next { right: -50px; }
+.owl-next { right: -55px; }
 
 .owl-prev i,
 .owl-next i {
   color: #ccc;
+  vertical-align: middle;
 }
 

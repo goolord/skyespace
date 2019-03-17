@@ -10,12 +10,18 @@
 
     <!-- Stylesheets. -->
     <link rel="stylesheet" type="text/css" href="/style.css" />
+    $if(styles)$
+    $for(styles)$
+      <link rel="stylesheet" type="text/css" href="$href$" $if(integrity)$ integrity="$integrity$" crossorigin="anonymous" $endif$></script>
+    $endfor$
+    $endif$
 
     <!-- Metadata. -->
     <!-- <meta name="keywords" content="Jasper Van der Jeugt,blog,programming,coding,haskell,function,personal,homepage"/> -->
     <!-- <meta name="description" content="Personal home page and blog of Jasper Van der Jeugt."/> -->
   </head>
   <body>
+    <main>
     <div class="container">
       <nav class="nav">
         <div class="nav-left">
@@ -27,18 +33,45 @@
           </div>
         </div>
         <div class="nav-right">
-          <!-- <a class="button outline">Button</a> -->
+          <div>
+            <div class="contact">
+              <img src="https://icongr.am/fontawesome/info-circle.svg?size=18&color=ffffff">
+              <div> Schuyler Sullivan </div> 
+              <img src="https://icongr.am/fontawesome/envelope-o.svg?size=18&color=ffffff">
+              <a href="mailto:skye@skye.space">skye@skye.space</a>
+            </div>
+          </div>
         </div>
       </nav>
     </div>
 
-    <div class='stars'></div>
-    <div class='twinkling'></div>
-
     <div class="container">
       $body$
     </div>
+    </main>
 
-    <script src="js/main.js"> </script>
+    <footer>
+      <div class="container footer is-right">
+        <div class="item">
+          <a href="https://skyespace.tumblr.com/">
+            <img src="https://icongr.am/fontawesome/tumblr.svg?size=18&color=ffffff">
+            tumblr
+          </a>
+        </div>
+        <div class="item">
+          <a href="https://github.com/goolord/skyespace">
+            <img src="https://icongr.am/fontawesome/github.svg?size=18&color=ffffff">
+            github
+          </a>
+        </div>
+        
+      </div>
+    </footer>
+    <script type="text/javascript" src="js/main.js"></script>
+    $if(scripts)$
+    $for(scripts)$
+      <script type="text/javascript" src="$src$"></script>
+    $endfor$
+    $endif$
   </body>
 </html>

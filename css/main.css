@@ -7,7 +7,7 @@
   --color-lightGrey: #3f4144;
   --color-error: #d43939;
   --color-success: #28bd14;
-  --grid-maxWidth: 90%;
+  --grid-maxWidth: 85%;
   --grid-gutter: 2rem;
   --font-size: 1.6rem;
   --font-family: "Poppins", sans-serif;
@@ -16,6 +16,7 @@
 
 html {
   color: var(--font-color);
+  background-color: rgb(10,10,10);
 }
 
 .stars, .twinkling {
@@ -57,3 +58,70 @@ nav {
 
 .brand { white-space:nowrap; }
 
+.contact {
+  display: grid;
+  grid-template-columns: 25px auto;
+  grid-row-gap: 3px;
+  grid-column-gap: 0.1ch;
+  grid-template-rows: auto;
+  font-size: 14px;
+}
+
+.contact * {
+  padding: 0 !important;
+}
+
+hr {
+  width: 100%;
+  display: block;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  margin-left: auto;
+  margin-right: auto;
+  border-style: inset;
+  border-width: 1px;
+  border-color: var(--color-lightGrey);
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+.footer {
+  border-top: 1px solid;
+  border-color: var(--color-lightGrey);
+  padding: 10px;
+}
+
+.footer .item a img {
+  vertical-align: middle;
+}
+
+.footer .item:not(last-child) {
+  padding-right: 2ch;
+}
+
+.footer a {
+  color: var(--font-color);
+}
+
+.gallery {
+  /* line-height: 0; */
+  -webkit-column-gap:   8px;
+  -moz-column-gap:      8px;
+  column-gap:           8px;  
+  -webkit-column-count: 5;
+  -moz-column-count:    5;
+  column-count:         5;
+}
+.gallery img {
+  /* Just in case there are inline attributes */
+  width: 100% !important;
+  height: auto !important;
+}

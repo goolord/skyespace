@@ -50,10 +50,12 @@ main = hakyll $ do
       let indexContext = 
                constField "title" "home"
             <> constField "art" arts
+            <> listField "scripts" scriptCtx (mapM makeItem indexScripts)
+            <> listField "styles" styleCtx (mapM makeItem indexStyles)
             <> defCtx
       makeItem ""
-        >>= loadAndApplyTemplate "templates/default.html" indexContext
         >>= loadAndApplyTemplate "templates/index.html" indexContext
+        >>= loadAndApplyTemplate "templates/default.html" indexContext
         >>= relativizeUrls
 
   create ["gallery.html"] $ do
@@ -71,8 +73,8 @@ main = hakyll $ do
             <> constField "art" arts
             <> defCtx
       makeItem ""
-        >>= loadAndApplyTemplate "templates/default.html" galleryContext
         >>= loadAndApplyTemplate "templates/gallery.html" galleryContext
+        >>= loadAndApplyTemplate "templates/default.html" galleryContext
         >>= relativizeUrls
 
   match "pages/*.md" $ do
@@ -88,3 +90,32 @@ activeClassField :: Context a
 activeClassField = functionField "activeClass" $ \[p] _ -> do
     path <- toFilePath <$> getUnderlying
     return $ if path == p then "active" else "inactive" 
+
+indexScripts :: [String]
+indexScripts = 
+  [ "js/index.js"
+  , "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+  , "https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
+  ]
+
+data Style = Style
+  { href :: String 
+  , integrity :: String
+  }
+
+indexStyles :: [Style]
+indexStyles =
+  [ Style "https://use.fontawesome.com/releases/v5.7.2/css/solid.css" "sha384-r/k8YTFqmlOaqRkZuSiE9trsrDXkh07mRaoGBMoDcmA58OHILZPsk29i2BsFng1B"
+  , Style "https://use.fontawesome.com/releases/v5.7.2/css/fontawesome.css" "sha384-4aon80D8rXCGx9ayDt85LbyUHeMWd3UiBaWliBlJ53yzm9hqN21A+o1pqoyK04h+"
+  ]
+
+scriptCtx :: Context String
+scriptCtx = Context f
+  where f "src" [] item = return $ StringField (itemBody item)
+        f _ _ _ = error "scriptCtx"
+
+styleCtx :: Context Style
+styleCtx = Context f
+  where f "href" [] item = return $ StringField $ href (itemBody item)
+        f "integrity" [] item = return $ StringField $ integrity (itemBody item)
+        f _ _ _ = error "scriptCtx"
