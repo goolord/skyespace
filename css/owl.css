@@ -171,9 +171,9 @@
   background: rgba(255, 255, 255, 0.3); 
 }
 
-.owl-prev { left: -55px; }
+.owl-prev { left: -60px; }
 
-.owl-next { right: -55px; }
+.owl-next { right: -60px; }
 
 .owl-prev i,
 .owl-next i {
