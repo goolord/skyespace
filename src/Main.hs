@@ -18,6 +18,7 @@ main = hakyll $ do
   match ("images/**.jpg" 
     .||. "images/**.png" 
     .||. "images/**.gif" 
+    .||. "images/**.webp" 
     .||. "favicon.ico" 
     .||. "files/**"
     .||. "js/*"
